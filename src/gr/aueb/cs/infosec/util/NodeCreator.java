@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class NodeCreator {
@@ -16,10 +18,12 @@ public class NodeCreator {
   private String output;
   private BufferedReader in;
   private BufferedWriter out;
+  private Map<String, String> node_pairs;
 
   public NodeCreator(String input, String output) {
     this.input = input;
     this.output = output;
+    this.node_pairs = new HashMap<String, String>();
     this.initialize();
   }
 
@@ -31,7 +35,6 @@ public class NodeCreator {
       io.printStackTrace();
     }
   }
-
 
   @Override
   public void finalize() {
@@ -45,6 +48,8 @@ public class NodeCreator {
     } catch (IOException io) {
       io.printStackTrace();
     }
+    this.node_pairs.clear();
+    this.node_pairs = null;
   }
 
   public void process() {
@@ -61,12 +66,18 @@ public class NodeCreator {
         try {
           StringTokenizer tokenizer =
               new StringTokenizer((nextLine.split(",")[1]).split("between")[1], "and,(");
-          String temp = (nextLine.split(",")[1]).split(" ")[0];
-          this.out.write(tokenizer.nextToken().replaceAll("^\\s+|\\s+$", ""));
+          String node_name = tokenizer.nextToken().replaceAll("^\\s+|\\s+$", "");
+          String first = (nextLine.split(",")[1]).split(" ")[0].replaceAll("^\\s+|\\s+$", "");
+          String second = tokenizer.nextToken().replaceAll("^\\s+|\\s+$", "");
+          String node_pair = first + "-" + second;
+          if (this.node_pairs.get(node_name) != null) {
+            // we don't want to write duplicate entries
+            continue;
+          }
+          this.node_pairs.put(node_name, node_pair);
+          this.out.write(node_name);
           this.out.write(",");
-          this.out.write(temp.replaceAll("^\\s+|\\s+$", ""));
-          this.out.write("-");
-          this.out.write(tokenizer.nextToken().replaceAll("^\\s+|\\s+$", ""));
+          this.out.write(node_pair);
           this.out.write(",");
           this.out.write(LABEL);
           this.out.write("\n");
@@ -81,5 +92,4 @@ public class NodeCreator {
     System.out
         .println("Parsed file : " + this.input + " in " + (System.currentTimeMillis() - startTime));
   }
-
 }
