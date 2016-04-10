@@ -3,9 +3,11 @@ package gr.aueb.cs.infosec.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
+import gr.aueb.cs.infosec.model.Node;
+
 public class RelationshipCreator extends Creator {
 
-  private final String CSV_HEADER = ":START_ID,edge_name,:END_ID,:TYPE";
+  private final String CSV_HEADER = ":START_ID,edge_name,middle_node,:END_ID,:TYPE";
   private final String RELATIONSHIP_TYPE = "Road_Congestion";
 
   public RelationshipCreator(String input, String output) {
@@ -26,28 +28,23 @@ public class RelationshipCreator extends Creator {
       out.write(CSV_HEADER);
       out.write("\n");
       while ((nextLine = in.readLine()) != null) {
-        try {
-          String[] split_nodes = this.splitNodeNames(nextLine);
-          String node_name = split_nodes[0];
-          String node_pair = split_nodes[1];
-          String link_name = split_nodes[2];
-          if (this.getNodePairs().get(link_name) != null) {
-            // we want one entry for each edge
-            // we are going to configure the value of the relationship later
-            continue;
-          }
-          this.getNodePairs().put(link_name, node_name);
-          out.write(node_name);
+        Node[] split_nodes = this.splitNodeNames(nextLine);
+        String link_name = this.getLinkName(nextLine);
+        if (this.getNodePairs().get(link_name) != null) {
+          continue;
+        }
+        this.getNodePairs().put(link_name, split_nodes[0].getName());
+        for (Node node : split_nodes) {
+          out.write(node.getName());
           out.write(",");
           out.write(link_name);
           out.write(",");
-          out.write(node_pair);
+          out.write(node.getConnectedNode1());
+          out.write(",");
+          out.write(node.getConnectedNode2());
           out.write(",");
           out.write(RELATIONSHIP_TYPE);
           out.write("\n");
-        } catch (ArrayIndexOutOfBoundsException ai) {
-          // file format issue, happens once or twice only, so i just ignore it
-          continue;
         }
       }
     } catch (Exception e) {

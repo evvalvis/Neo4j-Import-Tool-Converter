@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import gr.aueb.cs.infosec.model.Node;
+
 public abstract class Creator {
 
   private String input;
@@ -72,15 +74,37 @@ public abstract class Creator {
     return this.node_pairs;
   }
 
-  public String[] splitNodeNames(String inputLine) {
-    String[] results = new String[3];
-    StringTokenizer tokenizer =
-        new StringTokenizer((inputLine.split(",")[1]).split("between")[1], "and,(");
-    results[0] = tokenizer.nextToken().replaceAll("^\\s+|\\s+$", "");
-    String first = (inputLine.split(",")[1]).split(" ")[0].replaceAll("^\\s+|\\s+$", "");
+  public Node[] splitNodeNames(String inputLine) {
+    Node[] results = new Node[3];
+    String delimiters = "between,and,(";
+    if (this.getLinkName(inputLine).equals("AL1173A")) {
+      delimiters = "between,and";
+    }
+    StringTokenizer tokenizer = new StringTokenizer((inputLine.split(",")[1]), delimiters, false);
+    // used for very few specifically formatted entries
+    boolean flag = tokenizer.countTokens() == 5 && this.getLinkName(inputLine).equals("AL1311");
+    // first node
+    String first = tokenizer.nextToken().replaceAll("^\\s+|\\s+$", "");
+    // 2nd node
     String second = tokenizer.nextToken().replaceAll("^\\s+|\\s+$", "");
-    results[1] = first + "-" + second;
-    results[2] = inputLine.split(",")[0];
+    if (flag) {
+      tokenizer.nextToken();
+    }
+    // 3rd node
+    String third;
+    if (getLinkName(inputLine).equals("AL1173A")) {
+      String temp = tokenizer.nextToken();
+      third = temp.substring(0, temp.indexOf("(")).replaceAll("^\\s+|\\s+$", "");
+    } else {
+      third = tokenizer.nextToken().replaceAll("^\\s+|\\s+$", "");
+    }
+    results[0] = new Node(first, second, third);
+    results[1] = new Node(second, first, third);
+    results[2] = new Node(third, first, second);
     return results;
+  }
+
+  public String getLinkName(String inputLine) {
+    return inputLine.split(",")[0];
   }
 }
