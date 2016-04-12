@@ -7,9 +7,17 @@ import gr.aueb.cs.infosec.model.Node;
 
 public class RelationshipCreator extends Creator {
 
+  // output csv header
   private final String CSV_HEADER = ":START_ID,edge_name,middle_node,:END_ID,:TYPE";
+  // relationship type for the neo4j database
   private final String RELATIONSHIP_TYPE = "Road_Congestion";
 
+  /**
+   * Constructor
+   * 
+   * @param input
+   * @param output
+   */
   public RelationshipCreator(String input, String output) {
     super(input, output);
   }
@@ -39,9 +47,9 @@ public class RelationshipCreator extends Creator {
           out.write(",");
           out.write(link_name);
           out.write(",");
-          out.write(node.getConnectedNode1());
+          out.write(node.getFirstConnectedNode());
           out.write(",");
-          out.write(node.getConnectedNode2());
+          out.write(node.getSecondConnectedNode());
           out.write(",");
           out.write(RELATIONSHIP_TYPE);
           out.write("\n");
@@ -53,5 +61,4 @@ public class RelationshipCreator extends Creator {
     System.out.println(
         "Parsed file : " + this.getInput() + " in " + (System.currentTimeMillis() - startTime));
   }
-
 }

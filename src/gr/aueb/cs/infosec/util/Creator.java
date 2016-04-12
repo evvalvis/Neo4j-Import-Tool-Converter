@@ -13,12 +13,23 @@ import gr.aueb.cs.infosec.model.Node;
 
 public abstract class Creator {
 
+  // input file
   private String input;
+  // output file
   private String output;
+  // reader
   private BufferedReader in;
+  // writer
   private BufferedWriter out;
+  // storage, to check for duplicate entries
   private Map<String, String> storage;
 
+  /**
+   * Constructor
+   *
+   * @param input
+   * @param output
+   */
   public Creator(String input, String output) {
     this.input = input;
     this.output = output;
@@ -26,6 +37,9 @@ public abstract class Creator {
     this.initialize();
   }
 
+  /**
+   * Initializes the reader, the writer and the storage
+   */
   public void initialize() {
     try {
       this.in = new BufferedReader(new FileReader(new File(this.input)));
@@ -35,6 +49,9 @@ public abstract class Creator {
     }
   }
 
+  /**
+   * Closes the reader and the writer
+   */
   @Override
   public void finalize() {
     try {
@@ -51,28 +68,64 @@ public abstract class Creator {
     this.storage = null;
   }
 
+  /**
+   * This method will be implemented by the child classes Determines how the input file is going to
+   * be processed in order to create the output file.
+   */
   public abstract void process();
 
+  /**
+   * Get the input file
+   *
+   * @return
+   */
   public String getInput() {
     return this.input;
   }
 
+  /**
+   * Get the output file
+   *
+   * @return
+   */
   public String getOutput() {
     return this.output;
   }
 
+  /**
+   * Get the reader
+   *
+   * @return
+   */
   public BufferedReader getReader() {
     return this.in;
   }
 
+  /**
+   * Get the writer
+   *
+   * @return
+   */
   public BufferedWriter getWriter() {
     return this.out;
   }
 
+  /**
+   * Get the storage
+   *
+   * @return
+   */
   public Map<String, String> getStorage() {
     return this.storage;
   }
 
+  /**
+   * Given an input line from the csv dataset file, this method processes the line and returns the
+   * three nodes participating in the corresponding link.
+   *
+   * @param inputLine
+   * @return a Node array containing the nodes
+   */
   public Node[] splitNodeNames(String inputLine) {
     Node[] results = new Node[3];
     // first node
@@ -90,7 +143,12 @@ public abstract class Creator {
     return results;
   }
 
-
+  /**
+   * Get the link's name
+   * 
+   * @param inputLine
+   * @return
+   */
   public String getLinkName(String inputLine) {
     return inputLine.split(",")[0];
   }

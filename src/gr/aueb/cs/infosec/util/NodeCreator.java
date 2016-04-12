@@ -7,10 +7,17 @@ import gr.aueb.cs.infosec.model.Node;
 
 public class NodeCreator extends Creator {
 
-  // this could also be in the parent class
+  // output csv header
   private final String CSV_HEADER = "node_name:ID,connected_node1,connected_node2,:LABEL";
+  // label used for the neo4j database
   private final String LABEL = "Traffic node";
 
+  /**
+   * Constructor
+   * 
+   * @param input
+   * @param output
+   */
   public NodeCreator(String input, String output) {
     super(input, output);
   }
@@ -35,12 +42,12 @@ public class NodeCreator extends Creator {
             // we don't want to write duplicate entries
             continue;
           }
-          this.getStorage().put(node.getName(), node.getConnectedNode1());
+          this.getStorage().put(node.getName(), node.getFirstConnectedNode());
           out.write(node.getName());
           out.write(",");
-          out.write(node.getConnectedNode1());
+          out.write(node.getFirstConnectedNode());
           out.write(",");
-          out.write(node.getConnectedNode2());
+          out.write(node.getSecondConnectedNode());
           out.write(",");
           out.write(LABEL);
           out.write("\n");
