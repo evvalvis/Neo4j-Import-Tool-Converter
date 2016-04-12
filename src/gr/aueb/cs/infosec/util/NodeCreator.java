@@ -31,11 +31,11 @@ public class NodeCreator extends Creator {
       while ((nextLine = in.readLine()) != null) {
         Node[] split_nodes = this.splitNodeNames(nextLine);
         for (Node node : split_nodes) {
-          if (this.getNodePairs().get(node.getName()) != null) {
+          if (this.getStorage().get(node.getName()) != null) {
             // we don't want to write duplicate entries
             continue;
           }
-          this.getNodePairs().put(node.getName(), node.getConnectedNode1());
+          this.getStorage().put(node.getName(), node.getConnectedNode1());
           out.write(node.getName());
           out.write(",");
           out.write(node.getConnectedNode1());

@@ -30,10 +30,10 @@ public class RelationshipCreator extends Creator {
       while ((nextLine = in.readLine()) != null) {
         Node[] split_nodes = this.splitNodeNames(nextLine);
         String link_name = this.getLinkName(nextLine);
-        if (this.getNodePairs().get(link_name) != null) {
+        if (this.getStorage().get(link_name) != null) {
           continue;
         }
-        this.getNodePairs().put(link_name, split_nodes[0].getName());
+        this.getStorage().put(link_name, split_nodes[0].getName());
         for (Node node : split_nodes) {
           out.write(node.getName());
           out.write(",");
