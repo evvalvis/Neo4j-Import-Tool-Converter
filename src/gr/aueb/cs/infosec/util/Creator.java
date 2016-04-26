@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import gr.aueb.cs.infosec.model.Node;
@@ -23,6 +25,8 @@ public abstract class Creator {
   private BufferedWriter out;
   // storage, to check for duplicate entries
   private Map<String, String> storage;
+  // storage, for the flow rates
+  private Map<String, List<Double>> flowRates;
 
   /**
    * Constructor
@@ -34,6 +38,7 @@ public abstract class Creator {
     this.input = input;
     this.output = output;
     this.storage = new HashMap<String, String>();
+    this.flowRates = new HashMap<String, List<Double>>();
     this.initialize();
   }
 
@@ -66,6 +71,8 @@ public abstract class Creator {
     }
     this.storage.clear();
     this.storage = null;
+    this.flowRates.clear();
+    this.flowRates = null;
   }
 
   /**
@@ -120,6 +127,15 @@ public abstract class Creator {
   }
 
   /**
+   * Get the flow storage
+   *
+   * @return
+   */
+  public Map<String, List<Double>> getFlowRateStorage() {
+    return this.flowRates;
+  }
+
+  /**
    * Given an input line from the csv dataset file, this method processes the line and returns the
    * three nodes participating in the corresponding link.
    *
@@ -144,12 +160,51 @@ public abstract class Creator {
   }
 
   /**
+   * Returns the impact for the given link. Impact = max flow - min flow
+   *
+   * @param link
+   * @return
+   */
+  public double getImpact(String link) {
+    List<Double> flowz = this.flowRates.get(link);
+    if (flowz == null)
+      return -1;
+    return Collections.max(flowz, null) - Collections.min(flowz, null);
+  }
+
+  /**
+   * Get the data quality for the input link
+   *
+   * @param inputLine
+   * @return
+   */
+  public int getDataQuality(String inputLine) {
+    return Integer.parseInt(inputLine.split(",")[6]);
+  }
+
+  /**
    * Get the link's name
-   * 
+   *
    * @param inputLine
    * @return
    */
   public String getLinkName(String inputLine) {
     return inputLine.split(",")[0];
+  }
+
+  /**
+   * Get the link's flow. About the try catch : the dataset has in some occasions data quality 1
+   * entries missing the flow input ...... I just return 0 in that case (since we don't have correct
+   * input data we won't have correct output data)
+   *
+   * @param inputLine
+   * @return
+   */
+  public double getFlowRate(String inputLine) {
+    try {
+      return Double.parseDouble(inputLine.split(",")[8]);
+    } catch (Exception e) {
+      return 0;
+    }
   }
 }
