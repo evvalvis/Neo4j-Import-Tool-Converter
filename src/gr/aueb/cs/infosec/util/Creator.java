@@ -143,7 +143,8 @@ public abstract class Creator {
    * @return a Node array containing the nodes
    */
   public Node[] splitNodeNames(String inputLine) {
-    Node[] results = new Node[3];
+    // Node[] results = new Node[3];
+    Node[] results = new Node[2];
     // first node
     String first = inputLine.split(",")[1].split("between")[0].replaceAll("^\\s+|\\s+$", "");
     // 2nd node
@@ -153,7 +154,9 @@ public abstract class Creator {
     String temp = inputLine.split(",")[1].split("and")[1];
     String third = temp.substring(0, temp.indexOf("(" + this.getLinkName(inputLine) + ")"))
         .replaceAll("^\\s+|\\s+$", "");
-    results[0] = new Node(first, second, third);
+    // Testing : first entry is not needed
+    // TODO : Test again
+    // results[0] = new Node(first, second, third);
     results[1] = new Node(second, first, third);
     results[2] = new Node(third, first, second);
     return results;
