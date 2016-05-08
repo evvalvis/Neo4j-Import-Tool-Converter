@@ -1,7 +1,7 @@
 package gr.aueb.cs.infosec.test;
 
-import gr.aueb.cs.infosec.util.NodeCreator;
-import gr.aueb.cs.infosec.util.RelationshipCreator;
+import gr.aueb.infosec.creators.NodeCreator;
+import gr.aueb.infosec.creators.RelationshipCreator;
 
 public class Test {
 

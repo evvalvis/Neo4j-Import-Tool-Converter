@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.aueb.cs.infosec.model.Node;
-import gr.aueb.cs.infosec.util.RelationshipCreator;
+import gr.aueb.infosec.creators.RelationshipCreator;
 
 public class RelationshipFileTests {
 

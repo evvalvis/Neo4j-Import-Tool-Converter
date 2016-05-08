@@ -1,4 +1,4 @@
-package gr.aueb.cs.infosec.util;
+package gr.aueb.infosec.creators;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import gr.aueb.cs.infosec.model.Node;
+import gr.aueb.cs.infosec.util.Util;
 
 public class RelationshipCreator extends Creator {
 
@@ -43,12 +44,12 @@ public class RelationshipCreator extends Creator {
       out.write("\n");
       while ((nextLine = in.readLine()) != null) {
         // we wanna keep only 1 and 2 quality data
-        if (this.getDataQuality(nextLine) > 2) {
+        if (Util.getDataQuality(nextLine) > 2) {
           continue;
         }
         Node[] split_nodes = this.splitNodeNames(nextLine);
-        String link_name = this.getLinkName(nextLine);
-        double flow = this.getFlowRate(nextLine);
+        String link_name = Util.getLinkName(nextLine);
+        double flow = Util.getFlowRate(nextLine);
 
         if (this.getStorage().containsKey(link_name)) {
           this.getFlowRateStorage().get(link_name).add(flow);

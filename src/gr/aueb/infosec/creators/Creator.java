@@ -1,4 +1,4 @@
-package gr.aueb.cs.infosec.util;
+package gr.aueb.infosec.creators;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import gr.aueb.cs.infosec.model.Node;
+import gr.aueb.cs.infosec.util.Util;
 
 public abstract class Creator {
 
@@ -152,7 +153,7 @@ public abstract class Creator {
         inputLine.split(",")[1].split("and")[0].split("between")[1].replaceAll("^\\s+|\\s+$", "");
     // 3rd node
     String temp = inputLine.split(",")[1].split("and")[1];
-    String third = temp.substring(0, temp.indexOf("(" + this.getLinkName(inputLine) + ")"))
+    String third = temp.substring(0, temp.indexOf("(" + Util.getLinkName(inputLine) + ")"))
         .replaceAll("^\\s+|\\s+$", "");
     // Testing : first entry is not needed
     // TODO : Test again
@@ -173,41 +174,5 @@ public abstract class Creator {
     if (flowz == null)
       return -1;
     return Collections.max(flowz, null) - Collections.min(flowz, null);
-  }
-
-  /**
-   * Get the data quality for the input link
-   *
-   * @param inputLine
-   * @return
-   */
-  public int getDataQuality(String inputLine) {
-    return Integer.parseInt(inputLine.split(",")[6]);
-  }
-
-  /**
-   * Get the link's name
-   *
-   * @param inputLine
-   * @return
-   */
-  public String getLinkName(String inputLine) {
-    return inputLine.split(",")[0];
-  }
-
-  /**
-   * Get the link's flow. About the try catch : the dataset has in some occasions data quality 1
-   * entries missing the flow input ...... I just return 0 in that case (since we don't have correct
-   * input data we won't have correct output data)
-   *
-   * @param inputLine
-   * @return
-   */
-  public double getFlowRate(String inputLine) {
-    try {
-      return Double.parseDouble(inputLine.split(",")[8]);
-    } catch (Exception e) {
-      return 0;
-    }
   }
 }

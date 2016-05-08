@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.aueb.cs.infosec.model.Node;
-import gr.aueb.cs.infosec.util.NodeCreator;
+import gr.aueb.infosec.creators.NodeCreator;
 
 public class NodeFileTests {
 

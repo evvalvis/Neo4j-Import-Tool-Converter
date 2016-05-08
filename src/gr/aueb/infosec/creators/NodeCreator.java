@@ -1,4 +1,4 @@
-package gr.aueb.cs.infosec.util;
+package gr.aueb.infosec.creators;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
