@@ -60,7 +60,8 @@ public class RelationshipCreator extends Creator {
         String date = Util.getDate(nextLine);
         double flow = Util.getFlowRate(nextLine);
 
-        if (this.getStorage().containsKey(link_name) && this.counter != 4) {
+        if (this.getStorage().containsKey(link_name) && this.counter != 4
+            && this.currentHourlyEntry != null) {
           this.getFlowRateStorage().get(link_name).add(flow);
           this.currentHourlyEntry.addFlow(flow);
           continue;
@@ -93,6 +94,7 @@ public class RelationshipCreator extends Creator {
             this.currentHourlyEntry.addFlow(flow);
             this.currentHourlyEntry.setDate(date);
             this.currentHourlyEntry.setNodes(split_nodes);
+            this.currentHourlyEntry.setLink(link_name);
           }
         }
         // right here all the lines referring to the link have been read so we write the results

@@ -17,7 +17,7 @@ public class HourlyEntry {
    */
   public HourlyEntry() {
     this.flows = new ArrayList<Double>();
-    this.nodes = new String[2];
+    this.nodes = new String[3];
   }
 
   /**
