@@ -38,4 +38,14 @@ public class Util {
       return 0;
     }
   }
+
+  /**
+   * Get the date
+   * 
+   * @param nextLine
+   * @return
+   */
+  public static String getDate(String inputLine) {
+    return inputLine.split(",")[2].split(" ")[0];
+  }
 }

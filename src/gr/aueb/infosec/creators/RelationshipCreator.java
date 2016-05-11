@@ -5,19 +5,23 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import gr.aueb.cs.infosec.model.HourlyEntry;
 import gr.aueb.cs.infosec.model.Node;
 import gr.aueb.cs.infosec.util.Util;
 
 public class RelationshipCreator extends Creator {
 
   // output csv header
+  // TODO : Put this in properties file
   private final String CSV_HEADER = ":START_ID,edge_name,middle_node,:END_ID,:TYPE,impact";
   // relationship type for the neo4j database
   private final String RELATIONSHIP_TYPE = "Road_Congestion";
-  // temporary variable for current node array
-  private Node[] currentNodes;
-  // temporary variable for current link name
-  private String currentLink;
+  // temporary variable for current hourly entry
+  private HourlyEntry currentHourlyEntry;
+  // hour counter
+  private int hour = 0;
+  // quarter counter / counter for the read lines
+  private int counter = 0;
 
   /**
    * Constructor
@@ -43,52 +47,77 @@ public class RelationshipCreator extends Creator {
       out.write(CSV_HEADER);
       out.write("\n");
       while ((nextLine = in.readLine()) != null) {
+        // TODO : Discuss about this
         // we wanna keep only 1 and 2 quality data
-        if (Util.getDataQuality(nextLine) > 2) {
-          continue;
-        }
+        // if (Util.getDataQuality(nextLine) > 2) {
+        // continue;
+        // }
+        // TODO :
+        // if(Util.getFlowRate(nextLine) == 0)
+        // continue;
+        // skip all the data having data quality 1, which do not get out from the above check. and
+        // no flow value
+        this.counter++;
         Node[] split_nodes = this.splitNodeNames(nextLine);
         String link_name = Util.getLinkName(nextLine);
+        String date = Util.getDate(nextLine);
         double flow = Util.getFlowRate(nextLine);
 
-        if (this.getStorage().containsKey(link_name)) {
+        if (this.getStorage().containsKey(link_name) && this.counter != 4) {
           this.getFlowRateStorage().get(link_name).add(flow);
+          this.currentHourlyEntry.addFlow(flow);
           continue;
         } else {
-          // write the previous and init the new link
-          if (this.currentLink != null && this.currentNodes != null) {
-            this.write(this.currentNodes, this.currentLink);
+          this.hour++;
+          // TODO : Check this
+          if (this.hour == 25)
+            this.hour = 1;
+
+          // do not overwrite
+          if (this.getStorage().get(link_name) == null) {
+            this.getStorage().put(link_name, split_nodes[0].getName());
           }
-          this.getStorage().put(link_name, split_nodes[0].getName());
-          this.getFlowRateStorage().put(link_name, new ArrayList<Double>());
+          // do not overwrite the current list
+          if (this.getFlowRateStorage().get(link_name) == null) {
+            this.getFlowRateStorage().put(link_name, new ArrayList<Double>());
+          }
           this.getFlowRateStorage().get(link_name).add(flow);
-          this.currentNodes = split_nodes;
-          this.currentLink = link_name;
+          if (this.currentHourlyEntry != null) {
+            this.getHourlyFlowRateStorage().put(link_name, new ArrayList<HourlyEntry>());
+            this.getHourlyFlowRateStorage().get(link_name).add(this.currentHourlyEntry);
+            this.counter = 0;
+            this.currentHourlyEntry = null;
+          } else {
+            this.currentHourlyEntry = new HourlyEntry();
+            this.currentHourlyEntry.setHour(Integer.toString(this.hour));
+            this.currentHourlyEntry.addFlow(flow);
+            this.currentHourlyEntry.setDate(date);
+            this.currentHourlyEntry.setNodes(split_nodes);
+          }
         }
         // right here all the lines referring to the link have been read so we write the results
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
+    // set the flow levels to all entries
+    this.setLevelingForEachHourlyEntry();
+    // write the output file
+    this.write();
     System.out.println(
         "Parsed file : " + this.getInput() + " in " + (System.currentTimeMillis() - startTime));
   }
 
-  private void write(Node[] currentNodes, String currentLink) throws IOException {
-    BufferedWriter out = this.getWriter();
-    for (Node node : currentNodes) {
-      out.write(node.getName());
-      out.write(",");
-      out.write(currentLink);
-      out.write(",");
-      out.write(node.getFirstConnectedNode());
-      out.write(",");
-      out.write(node.getSecondConnectedNode());
-      out.write(",");
-      out.write(RELATIONSHIP_TYPE);
-      out.write(",");
-      out.write(new Double(this.getImpact(currentLink)).toString());
-      out.write("\n");
-    }
+  /***
+   * Write the output file
+   *
+   * @param currentLink
+   * @param currentHourlyEntry
+   * @throws IOException
+   */
+
+  private void write() {
+    // TODO implement
   }
+
 }

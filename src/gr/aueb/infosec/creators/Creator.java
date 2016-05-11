@@ -11,7 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gr.aueb.cs.infosec.model.HourlyEntry;
+import gr.aueb.cs.infosec.model.HourlyEntryComparator;
 import gr.aueb.cs.infosec.model.Node;
+import gr.aueb.cs.infosec.util.Scaling;
 import gr.aueb.cs.infosec.util.Util;
 
 public abstract class Creator {
@@ -28,6 +31,8 @@ public abstract class Creator {
   private Map<String, String> storage;
   // storage, for the flow rates
   private Map<String, List<Double>> flowRates;
+  // storage for the quarter flow rates
+  private Map<String, List<HourlyEntry>> hourlyFlowRates;
 
   /**
    * Constructor
@@ -40,6 +45,7 @@ public abstract class Creator {
     this.output = output;
     this.storage = new HashMap<String, String>();
     this.flowRates = new HashMap<String, List<Double>>();
+    this.hourlyFlowRates = new HashMap<String, List<HourlyEntry>>();
     this.initialize();
   }
 
@@ -74,6 +80,8 @@ public abstract class Creator {
     this.storage = null;
     this.flowRates.clear();
     this.flowRates = null;
+    this.hourlyFlowRates.clear();
+    this.hourlyFlowRates = null;
   }
 
   /**
@@ -137,6 +145,15 @@ public abstract class Creator {
   }
 
   /**
+   * Get the hourly flow storage
+   *
+   * @return
+   */
+  public Map<String, List<HourlyEntry>> getHourlyFlowRateStorage() {
+    return this.hourlyFlowRates;
+  }
+
+  /**
    * Given an input line from the csv dataset file, this method processes the line and returns the
    * three nodes participating in the corresponding link.
    *
@@ -158,8 +175,8 @@ public abstract class Creator {
     // Testing : first entry is not needed
     // TODO : Test again
     // results[0] = new Node(first, second, third);
-    results[1] = new Node(second, first, third);
-    results[2] = new Node(third, first, second);
+    results[0] = new Node(second, first, third);
+    results[1] = new Node(third, first, second);
     return results;
   }
 
@@ -175,4 +192,27 @@ public abstract class Creator {
       return -1;
     return Collections.max(flowz, null) - Collections.min(flowz, null);
   }
+
+  /**
+   * This method sets the flow level for all the current entries
+   */
+  public void setLevelingForEachHourlyEntry() {
+    // for each link entered
+    for (String nextLink : this.hourlyFlowRates.keySet()) {
+      double maxFlow =
+          (Collections.max(this.hourlyFlowRates.get(nextLink), new HourlyEntryComparator()))
+              .getAverageFlow();
+      double minFlow =
+          (Collections.min(this.hourlyFlowRates.get(nextLink), new HourlyEntryComparator()))
+              .getAverageFlow();
+      // scale on a [1, 5] scale with 5 being the highest level
+      Scaling scaling = new Scaling(minFlow, maxFlow, 1, 5);
+
+      // Set the flow level for each hourly entry about the specific link
+      for (HourlyEntry he : this.hourlyFlowRates.get(nextLink)) {
+        he.setFlowLevel(Math.floor(scaling.rescale(he.getAverageFlow())));
+      }
+    }
+  }
+
 }

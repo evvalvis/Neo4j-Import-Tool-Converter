@@ -8,6 +8,7 @@ public class HourlyEntry {
   private String date;
   private String hour;
   private String link;
+  private double flowLevel;
   private List<Double> flows;
   private String[] nodes;
 
@@ -20,8 +21,26 @@ public class HourlyEntry {
   }
 
   /**
+   * Set this entry's flow level
+   *
+   * @param d
+   */
+  public void setFlowLevel(double d) {
+    this.flowLevel = d;
+  }
+
+  /**
+   * Get this entry's flow level
+   *
+   * @return
+   */
+  public double getFlowLevel() {
+    return this.flowLevel;
+  }
+
+  /**
    * Set this entry's hour. Entries vary from 1 to 24
-   * 
+   *
    * @param hour
    */
   public void setHour(String hour) {
@@ -30,30 +49,11 @@ public class HourlyEntry {
 
   /**
    * Get this entry's hour
-   * 
+   *
    * @return
    */
   public String getHour() {
     return this.hour;
-  }
-
-  /**
-   * Set the nodes . Note : always gonna be 3
-   *
-   * @param nodes
-   */
-  public void setNodes(String... nodes) {
-    this.nodes[0] = nodes[0];
-    this.nodes[1] = nodes[1];
-  }
-
-  /**
-   * Get the nodes
-   *
-   * @return
-   */
-  public String[] getNodes() {
-    return this.nodes;
   }
 
   /**
@@ -102,12 +102,37 @@ public class HourlyEntry {
   }
 
   /**
-   * Get the average hourly flow from the quarter entries. Using java 8 stream to calculate the
-   * average.
+   * Get the average hourly flow from the quarter entries.
    *
    * @return
    */
   public double getAverageFlow() {
-    return (this.flows.stream().mapToDouble(a -> a).average()).getAsDouble();
+    if (this.flows.size() == 0)
+      return 0;
+    double sum = 0;
+    for (double flow : this.flows) {
+      sum += flow;
+    }
+    return sum / this.flows.size();
+  }
+
+  /**
+   * Set the nodes
+   *
+   * @param split_nodes
+   */
+  public void setNodes(Node[] split_nodes) {
+    this.nodes[0] = split_nodes[0].getName();
+    this.nodes[1] = split_nodes[0].getFirstConnectedNode();
+    this.nodes[2] = split_nodes[0].getSecondConnectedNode();
+  }
+
+  /**
+   * Get the nodes
+   *
+   * @return
+   */
+  public String[] getNodes() {
+    return this.nodes;
   }
 }
