@@ -13,7 +13,8 @@ public class RelationshipCreator extends Creator {
 
   // output csv header
   // TODO : Put this in properties file
-  private final String CSV_HEADER = ":START_ID,edge_name,middle_node,:END_ID,:TYPE,impact";
+  private final String CSV_HEADER =
+      ":START_ID,edge_name,road,:END_ID,:TYPE,date,hour,flow,flowLevel";
   // relationship type for the neo4j database
   private final String RELATIONSHIP_TYPE = "Road_Congestion";
   // temporary variable for current hourly entry
@@ -39,13 +40,9 @@ public class RelationshipCreator extends Creator {
     long startTime = System.currentTimeMillis();
     String nextLine = null;
     BufferedReader in = this.getReader();
-    BufferedWriter out = this.getWriter();
     try {
       // do not read the header
       in.readLine();
-      // write the corresponding header to the output
-      out.write(CSV_HEADER);
-      out.write("\n");
       while ((nextLine = in.readLine()) != null) {
         // TODO : Discuss about this
         // we wanna keep only 1 and 2 quality data
@@ -120,7 +117,37 @@ public class RelationshipCreator extends Creator {
    */
 
   private void write() {
-    // TODO implement
+    BufferedWriter out = this.getWriter();
+    try {
+      // write the corresponding header to the output
+      out.write(CSV_HEADER);
+      out.write("\n");
+
+      for (String nextLink : this.getHourlyFlowRateStorage().keySet()) {
+        for (HourlyEntry he : this.getHourlyFlowRateStorage().get(nextLink)) {
+          out.write(he.getNodes()[0]);
+          out.write(",");
+          out.write(he.getLink());
+          out.write(",");
+          out.write(he.getNodes()[1]);
+          out.write(",");
+          out.write(he.getNodes()[2]);
+          out.write(",");
+          out.write(RELATIONSHIP_TYPE);
+          out.write(",");
+          out.write(he.getDate());
+          out.write(",");
+          out.write(he.getHour());
+          out.write(",");
+          out.write(Double.toString(he.getAverageFlow()));
+          out.write(",");
+          out.write(Double.toString(he.getFlowLevel()));
+          out.write("\n");
+        }
+      }
+    } catch (IOException io) {
+      System.out.println(io.getMessage());
+    }
   }
 
 }
