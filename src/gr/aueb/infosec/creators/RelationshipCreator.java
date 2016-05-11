@@ -82,8 +82,11 @@ public class RelationshipCreator extends Creator {
             this.getFlowRateStorage().put(link_name, new ArrayList<Double>());
           }
           this.getFlowRateStorage().get(link_name).add(flow);
-          if (this.currentHourlyEntry != null) {
+          // TODO : Check this one again
+          if (this.getHourlyFlowRateStorage().get(link_name) == null) {
             this.getHourlyFlowRateStorage().put(link_name, new ArrayList<HourlyEntry>());
+          }
+          if (this.currentHourlyEntry != null) {
             this.getHourlyFlowRateStorage().get(link_name).add(this.currentHourlyEntry);
             this.counter = 0;
             this.currentHourlyEntry = null;
