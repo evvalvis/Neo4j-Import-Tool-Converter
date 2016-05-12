@@ -35,13 +35,13 @@ public class Util {
       return Double.parseDouble(inputLine.split(",")[8]);
     } catch (Exception e) {
       // TODO : Discuss about this
-      return 0;
+      return -1;
     }
   }
 
   /**
    * Get the date
-   * 
+   *
    * @param nextLine
    * @return
    */

@@ -50,7 +50,7 @@ public class RelationshipCreator extends Creator {
         // continue;
         // }
         // TODO :
-        // if(Util.getFlowRate(nextLine) == 0)
+        // if(Util.getFlowRate(nextLine) == -1)
         // continue;
         // skip all the data having data quality 1, which do not get out from the above check. and
         // no flow value
@@ -66,10 +66,6 @@ public class RelationshipCreator extends Creator {
           this.currentHourlyEntry.addFlow(flow);
           continue;
         } else {
-          this.hour++;
-          // TODO : Check this
-          if (this.hour == 25)
-            this.hour = 1;
 
           // do not overwrite
           if (this.getStorage().get(link_name) == null) {
@@ -89,6 +85,10 @@ public class RelationshipCreator extends Creator {
             this.counter = 0;
             this.currentHourlyEntry = null;
           } else {
+            // TODO : Check
+            this.hour++;
+            if (hour == 25)
+              hour = 1;
             this.currentHourlyEntry = new HourlyEntry();
             this.currentHourlyEntry.setHour(Integer.toString(this.hour));
             this.currentHourlyEntry.addFlow(flow);
