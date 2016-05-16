@@ -9,6 +9,7 @@ public class HourlyEntry {
   private String hour;
   private String link;
   private double flowLevel;
+  private boolean type;
   private List<Double> flows;
   private String[] nodes;
 
@@ -18,6 +19,33 @@ public class HourlyEntry {
   public HourlyEntry() {
     this.flows = new ArrayList<Double>();
     this.nodes = new String[3];
+  }
+
+  /**
+   * Set the entry's type
+   *
+   * @param type
+   */
+  public void setType(boolean type) {
+    this.type = type;
+  }
+
+  /**
+   * Get the String representation of this entry's type
+   * 
+   * @return
+   */
+  public String getTypeStr() {
+    return (this.type) ? "good" : "bad";
+  }
+
+  /**
+   * Get this entry's type
+   *
+   * @return
+   */
+  public boolean getType() {
+    return this.type;
   }
 
   /**

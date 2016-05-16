@@ -215,4 +215,59 @@ public abstract class Creator {
     }
   }
 
+  /**
+   * Determine whether each entry is "good" or bad. Every entry is feasible since the flows are > 0
+   */
+  public void determineEntries() {
+    for (String nextLink : this.hourlyFlowRates.keySet()) {
+      for (HourlyEntry he : this.hourlyFlowRates.get(nextLink)) {
+        double x_r = he.getAverageFlow();
+        he.setType(this.calculateSum(x_r, this.hourlyFlowRates.get(nextLink)));
+      }
+    }
+  }
+
+  /**
+   * Calculate the sum determining whether an entry is good or bad
+   *
+   * @param x_r
+   * @param list
+   * @return
+   */
+  private boolean calculateSum(double x_r, List<HourlyEntry> list) {
+    double sum = 0;
+    for (HourlyEntry he : list) {
+      sum += (he.getAverageFlow() - x_r) / x_r;
+    }
+    // for dev use only
+    goodOrBad(sum < 0);
+    return sum < 0;
+  }
+
+  // just for statistics, will be deleted in the near future
+  private int good = 0;
+  private int bad = 0;
+  private int total = 0;
+
+  public void goodOrBad(boolean b) {
+    total++;
+    if (b)
+      good++;
+    else
+      bad++;
+  }
+
+  public int getGood() {
+    return this.good;
+  }
+
+  public int getBad() {
+    return this.bad;
+  }
+
+  public int getTotal() {
+    return this.total;
+  }
+
+  // end of dev use only code
 }

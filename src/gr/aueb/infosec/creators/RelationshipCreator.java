@@ -14,7 +14,7 @@ public class RelationshipCreator extends Creator {
   // output csv header
   // TODO : Put this in properties file
   private final String CSV_HEADER =
-      ":START_ID,edge_name,road,:END_ID,:TYPE,date,hour,flow,flowLevel";
+      ":START_ID,edge_name,road,:END_ID,:TYPE,date,hour,flow,impactLevel,type";
   // relationship type for the neo4j database
   private final String RELATIONSHIP_TYPE = "Road_Congestion";
   // temporary variable for current hourly entry
@@ -104,6 +104,8 @@ public class RelationshipCreator extends Creator {
     }
     // set the flow levels to all entries
     this.setLevelingForEachHourlyEntry();
+    // determine whether each entry is "bad" or "good"
+    this.determineEntries();
     // write the output file
     this.write();
     System.out.println(
@@ -144,6 +146,8 @@ public class RelationshipCreator extends Creator {
           out.write(Double.toString(he.getAverageFlow()));
           out.write(",");
           out.write(Double.toString(he.getFlowLevel()));
+          out.write(",");
+          out.write(he.getTypeStr());
           out.write("\n");
         }
       }
