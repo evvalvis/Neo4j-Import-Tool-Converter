@@ -34,7 +34,6 @@ public class Util {
     try {
       return Double.parseDouble(inputLine.split(",")[8]);
     } catch (Exception e) {
-      // TODO : Discuss about this
       return -1;
     }
   }

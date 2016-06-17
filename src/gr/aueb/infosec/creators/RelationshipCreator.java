@@ -40,21 +40,19 @@ public class RelationshipCreator extends Creator {
     long startTime = System.currentTimeMillis();
     String nextLine = null;
     BufferedReader in = this.getReader();
+    int skipped = 0;
     try {
       // do not read the header
       in.readLine();
       while ((nextLine = in.readLine()) != null) {
-        // TODO : Discuss about this
-        // we wanna keep only 1 and 2 quality data
-        // if (Util.getDataQuality(nextLine) > 2) {
-        // continue;
-        // }
-        // TODO :
-        // if(Util.getFlowRate(nextLine) == -1)
-        // continue;
-        // skip all the data having data quality 1, which do not get out from the above check. and
-        // no flow value
         this.counter++;
+        // we wanna keep only 1 and 2 quality data and
+        // skip all the data having data quality 1, which do not have a flow value
+        if (Util.getDataQuality(nextLine) > 2 || Util.getFlowRate(nextLine) == -1) {
+          skipped++;
+          continue;
+        }
+
         Node[] split_nodes = this.splitNodeNames(nextLine);
         String link_name = Util.getLinkName(nextLine);
         String date = Util.getDate(nextLine);
@@ -85,7 +83,6 @@ public class RelationshipCreator extends Creator {
             this.counter = 0;
             this.currentHourlyEntry = null;
           } else {
-            // TODO : Check
             this.hour++;
             if (hour == 25)
               hour = 1;
@@ -110,6 +107,7 @@ public class RelationshipCreator extends Creator {
     this.write();
     System.out.println(
         "Parsed file : " + this.getInput() + " in " + (System.currentTimeMillis() - startTime));
+    System.out.println("Skipped : " + skipped);
   }
 
   /***

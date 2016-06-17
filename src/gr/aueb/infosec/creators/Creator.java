@@ -199,18 +199,23 @@ public abstract class Creator {
   public void setLevelingForEachHourlyEntry() {
     // for each link entered
     for (String nextLink : this.hourlyFlowRates.keySet()) {
-      double maxFlow =
-          (Collections.max(this.hourlyFlowRates.get(nextLink), new HourlyEntryComparator()))
-              .getAverageFlow();
-      double minFlow =
-          (Collections.min(this.hourlyFlowRates.get(nextLink), new HourlyEntryComparator()))
-              .getAverageFlow();
-      // scale on a [1, 5] scale with 5 being the highest level
-      Scaling scaling = new Scaling(minFlow, maxFlow, 1, 5);
+      try {
+        double maxFlow =
+            (Collections.max(this.hourlyFlowRates.get(nextLink), new HourlyEntryComparator()))
+                .getAverageFlow();
+        double minFlow =
+            (Collections.min(this.hourlyFlowRates.get(nextLink), new HourlyEntryComparator()))
+                .getAverageFlow();
+        // scale on a [1, 5] scale with 5 being the highest level
+        Scaling scaling = new Scaling(minFlow, maxFlow, 1, 5);
 
-      // Set the flow level for each hourly entry about the specific link
-      for (HourlyEntry he : this.hourlyFlowRates.get(nextLink)) {
-        he.setFlowLevel(Math.floor(scaling.rescale(he.getAverageFlow())));
+        // Set the flow level for each hourly entry about the specific link
+        for (HourlyEntry he : this.hourlyFlowRates.get(nextLink)) {
+          he.setFlowLevel(Math.floor(scaling.rescale(he.getAverageFlow())));
+        }
+      } catch (Exception e) {
+        System.out.println(nextLink);
+        System.out.println(this.hourlyFlowRates.get(nextLink) == null);
       }
     }
   }
@@ -239,35 +244,6 @@ public abstract class Creator {
     for (HourlyEntry he : list) {
       sum += (he.getAverageFlow() - x_r) / x_r;
     }
-    // for dev use only
-    goodOrBad(sum < 0);
     return sum < 0;
   }
-
-  // just for statistics, will be deleted in the near future
-  private int good = 0;
-  private int bad = 0;
-  private int total = 0;
-
-  public void goodOrBad(boolean b) {
-    total++;
-    if (b)
-      good++;
-    else
-      bad++;
-  }
-
-  public int getGood() {
-    return this.good;
-  }
-
-  public int getBad() {
-    return this.bad;
-  }
-
-  public int getTotal() {
-    return this.total;
-  }
-
-  // end of dev use only code
 }
