@@ -46,7 +46,7 @@ public class RelationshipCreator extends Creator {
       in.readLine();
       while ((nextLine = in.readLine()) != null) {
         this.counter++;
-        // we wanna keep only 1 and 2 quality data and
+        // we want to keep only 1 and 2 quality data and
         // skip all the data having data quality 1, which do not have a flow value
         if (Util.getDataQuality(nextLine) > 2 || Util.getFlowRate(nextLine) == -1) {
           skipped++;
@@ -74,7 +74,7 @@ public class RelationshipCreator extends Creator {
             this.getFlowRateStorage().put(link_name, new ArrayList<Double>());
           }
           this.getFlowRateStorage().get(link_name).add(flow);
-          // TODO : Check this one again
+
           if (this.getHourlyFlowRateStorage().get(link_name) == null) {
             this.getHourlyFlowRateStorage().put(link_name, new ArrayList<HourlyEntry>());
           }
@@ -94,7 +94,6 @@ public class RelationshipCreator extends Creator {
             this.currentHourlyEntry.setLink(link_name);
           }
         }
-        // right here all the lines referring to the link have been read so we write the results
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -102,11 +101,15 @@ public class RelationshipCreator extends Creator {
     // set the flow levels to all entries
     this.setLevelingForEachHourlyEntry();
     // determine whether each entry is "bad" or "good"
+    // Performance-wise this shouldn't be placed here, but into the above method
+    // I decided to sacrifice some time in order for the reader to fully understand the code,
+    // since this is not an industrial release (yet)
     this.determineEntries();
     // write the output file
     this.write();
     System.out.println(
         "Parsed file : " + this.getInput() + " in " + (System.currentTimeMillis() - startTime));
+    // keep this for debug purposes
     System.out.println("Skipped : " + skipped);
   }
 
@@ -154,8 +157,12 @@ public class RelationshipCreator extends Creator {
     }
   }
 
+  /**
+   * Access to the csv's header
+   *
+   * @return
+   */
   public static String getCSVHeader() {
     return CSV_HEADER;
   }
-
 }

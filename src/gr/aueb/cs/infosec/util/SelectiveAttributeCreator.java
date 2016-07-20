@@ -22,6 +22,13 @@ public class SelectiveAttributeCreator {
   private BufferedReader br = null;
   private BufferedWriter bw = null;
 
+  /**
+   * Constructor
+   *
+   * @param inputFile
+   * @param output
+   * @param searchAttributes
+   */
   public SelectiveAttributeCreator(String inputFile, String output, Attribute... searchAttributes) {
     this.inputFile = inputFile;
     this.output = output;
@@ -29,30 +36,66 @@ public class SelectiveAttributeCreator {
     this.nodeRepository = new ArrayList<Node>();
   }
 
-  public void setSearchAttribute(Attribute... searchAttributes) {
+  /**
+   * Set the attributed the subgraph is created from.
+   *
+   * @param searchAttributes
+   */
+  public void setSearchAttributes(Attribute... searchAttributes) {
     this.searchAttributes = new ArrayList<Attribute>(Arrays.asList(searchAttributes));
   }
 
+  /**
+   * Get the attributed the subgraph is created from.
+   *
+   * @return
+   */
   public List<Attribute> getSearchAttribute() {
     return this.searchAttributes;
   }
 
+  /**
+   * Set the output csv file
+   *
+   * @param output
+   */
   public void setOutput(String output) {
     this.output = output;
   }
 
+  /**
+   * Get the output csv file
+   *
+   * @return
+   */
   public String getOutput() {
     return this.output;
   }
 
+  /**
+   * Set the input csv file
+   *
+   * @param inputFile
+   */
   public void setInputFile(String inputFile) {
     this.inputFile = inputFile;
   }
 
+  /**
+   * Get the input csv file
+   *
+   * @return
+   */
   public String getInputFile() {
     return this.inputFile;
   }
 
+  /**
+   * This method creates the subgraph. First off, it checks if the selected attributes are present
+   * in the current graph. Then is locates their positions on the csv header, in order to know which
+   * positions to check. Finally, it parses the input file and writes the applicable entries to the
+   * output one.
+   */
   public void createSubgraph() {
     System.out.println("Starting subgraph creation");
     this.nodeRepository.clear();
@@ -112,6 +155,12 @@ public class SelectiveAttributeCreator {
     System.out.println("Finished subgraph creation");
   }
 
+  /**
+   * Locates the positions of the selected attributes
+   * 
+   * @param csv_header
+   * @return an array contain the indices after using the split method on the csv header
+   */
   private int[] locateAttributeIndices(String csv_header) {
     List<String> header_attributes = Arrays.asList(csv_header.split(","));
     int[] indices = new int[this.searchAttributes.size()];
@@ -121,6 +170,12 @@ public class SelectiveAttributeCreator {
     return indices;
   }
 
+  /**
+   * Checks if the selected attributes are present in the current graph
+   * 
+   * @param csv_header
+   * @return
+   */
   private boolean checkAttributes(String csv_header) {
     List<String> header_attributes = Arrays.asList(csv_header.split(","));
     for (Attribute atr : this.searchAttributes) {

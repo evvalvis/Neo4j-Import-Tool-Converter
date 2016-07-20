@@ -161,7 +161,6 @@ public abstract class Creator {
    * @return a Node array containing the nodes
    */
   public Node[] splitNodeNames(String inputLine) {
-    // Node[] results = new Node[3];
     Node[] results = new Node[2];
     // first node
     String first = inputLine.split(",")[1].split("between")[0].replaceAll("^\\s+|\\s+$", "");
@@ -172,9 +171,6 @@ public abstract class Creator {
     String temp = inputLine.split(",")[1].split("and")[1];
     String third = temp.substring(0, temp.indexOf("(" + Util.getLinkName(inputLine) + ")"))
         .replaceAll("^\\s+|\\s+$", "");
-    // Testing : first entry is not needed
-    // TODO : Test again
-    // results[0] = new Node(first, second, third);
     results[0] = new Node(second, first, third);
     results[1] = new Node(third, first, second);
     return results;
@@ -214,8 +210,8 @@ public abstract class Creator {
           he.setFlowLevel(Math.floor(scaling.rescale(he.getAverageFlow())));
         }
       } catch (Exception e) {
-        System.out.println(nextLink);
-        System.out.println(this.hourlyFlowRates.get(nextLink) == null);
+        // will be thrown a couple of times for some non-eligible entries
+        // doesn't affect the program's work cause we are talking about 3-4 entries only
       }
     }
   }

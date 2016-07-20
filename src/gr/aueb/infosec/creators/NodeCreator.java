@@ -60,10 +60,20 @@ public class NodeCreator extends Creator {
         "Parsed file : " + this.getInput() + " in " + (System.currentTimeMillis() - startTime));
   }
 
+  /**
+   * Access to the csv's header
+   * 
+   * @return
+   */
   public static String getCSVHeader() {
     return CSV_HEADER;
   }
 
+  /**
+   * Access to neo4j's label for the nodes
+   * 
+   * @return
+   */
   public static String getLabel() {
     return LABEL;
   }
