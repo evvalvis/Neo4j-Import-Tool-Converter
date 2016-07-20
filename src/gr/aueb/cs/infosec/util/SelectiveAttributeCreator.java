@@ -11,14 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import gr.aueb.cs.infosec.model.Attribute;
-import gr.aueb.cs.infosec.model.Node;
 
 public class SelectiveAttributeCreator {
 
   private String inputFile;
   private String output;
   private List<Attribute> searchAttributes;
-  private List<Node> nodeRepository;
   private BufferedReader br = null;
   private BufferedWriter bw = null;
 
@@ -33,7 +31,6 @@ public class SelectiveAttributeCreator {
     this.inputFile = inputFile;
     this.output = output;
     this.searchAttributes = new ArrayList<Attribute>(Arrays.asList(searchAttributes));
-    this.nodeRepository = new ArrayList<Node>();
   }
 
   /**
@@ -98,7 +95,6 @@ public class SelectiveAttributeCreator {
    */
   public void createSubgraph() {
     System.out.println("Starting subgraph creation");
-    this.nodeRepository.clear();
     try {
       this.br = new BufferedReader(new FileReader(new File(this.inputFile)));
       this.bw = new BufferedWriter(new FileWriter(new File(this.output)));
@@ -157,7 +153,7 @@ public class SelectiveAttributeCreator {
 
   /**
    * Locates the positions of the selected attributes
-   * 
+   *
    * @param csv_header
    * @return an array contain the indices after using the split method on the csv header
    */
@@ -172,7 +168,7 @@ public class SelectiveAttributeCreator {
 
   /**
    * Checks if the selected attributes are present in the current graph
-   * 
+   *
    * @param csv_header
    * @return
    */
