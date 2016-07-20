@@ -13,7 +13,7 @@ public class RelationshipCreator extends Creator {
 
   // output csv header
   // TODO : Put this in properties file
-  private final String CSV_HEADER =
+  private final static String CSV_HEADER =
       ":START_ID,edge_name,road,:END_ID,:TYPE,date,hour,flow,impactLevel,type";
   // relationship type for the neo4j database
   private final String RELATIONSHIP_TYPE = "Road_Congestion";
@@ -152,6 +152,10 @@ public class RelationshipCreator extends Creator {
     } catch (IOException io) {
       System.out.println(io.getMessage());
     }
+  }
+
+  public static String getCSVHeader() {
+    return CSV_HEADER;
   }
 
 }

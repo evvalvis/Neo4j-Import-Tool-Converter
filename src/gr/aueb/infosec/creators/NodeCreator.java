@@ -8,13 +8,13 @@ import gr.aueb.cs.infosec.model.Node;
 public class NodeCreator extends Creator {
 
   // output csv header
-  private final String CSV_HEADER = "node_name:ID,connected_node1,connected_node2,:LABEL";
+  private static final String CSV_HEADER = "node_name:ID,connected_node1,connected_node2,:LABEL";
   // label used for the neo4j database
-  private final String LABEL = "Traffic node";
+  private static final String LABEL = "Traffic node";
 
   /**
    * Constructor
-   * 
+   *
    * @param input
    * @param output
    */
@@ -58,5 +58,13 @@ public class NodeCreator extends Creator {
     }
     System.out.println(
         "Parsed file : " + this.getInput() + " in " + (System.currentTimeMillis() - startTime));
+  }
+
+  public static String getCSVHeader() {
+    return CSV_HEADER;
+  }
+
+  public static String getLabel() {
+    return LABEL;
   }
 }
