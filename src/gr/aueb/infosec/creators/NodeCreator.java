@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
 import gr.aueb.cs.infosec.model.Node;
+import gr.aueb.cs.infosec.util.Util;
 
 public class NodeCreator extends Creator {
 
@@ -36,6 +37,10 @@ public class NodeCreator extends Creator {
       out.write(CSV_HEADER);
       out.write("\n");
       while ((nextLine = in.readLine()) != null) {
+        // check if the nodes are missing from the entry
+        if (Util.checkForEmptyNodes(nextLine)) {
+          continue;
+        }
         Node[] split_nodes = this.splitNodeNames(nextLine);
         for (Node node : split_nodes) {
           if (this.getStorage().get(node.getName()) != null) {
@@ -62,7 +67,7 @@ public class NodeCreator extends Creator {
 
   /**
    * Access to the csv's header
-   * 
+   *
    * @return
    */
   public static String getCSVHeader() {
@@ -71,7 +76,7 @@ public class NodeCreator extends Creator {
 
   /**
    * Access to neo4j's label for the nodes
-   * 
+   *
    * @return
    */
   public static String getLabel() {

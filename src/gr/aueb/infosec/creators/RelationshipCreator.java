@@ -48,7 +48,9 @@ public class RelationshipCreator extends Creator {
         this.counter++;
         // we want to keep only 1 and 2 quality data and
         // skip all the data having data quality 1, which do not have a flow value
-        if (Util.getDataQuality(nextLine) > 2 || Util.getFlowRate(nextLine) == -1) {
+        // also skip the entries with missing nodes
+        if (Util.getDataQuality(nextLine) > 2 || Util.getFlowRate(nextLine) == -1
+            || Util.checkForEmptyNodes(nextLine)) {
           skipped++;
           continue;
         }

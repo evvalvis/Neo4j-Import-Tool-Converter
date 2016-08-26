@@ -182,14 +182,12 @@ public class SelectiveAttributeCreator {
   }
 
   public static void main(String[] args) {
-    Attribute atr1 = new Attribute("date", "2014-08-01");
-    Attribute atr2 = new Attribute("hour", "9");
-    Attribute atr3 = new Attribute(":START_ID", "M25 J15");
-    Attribute atr4 = new Attribute("type", "good");
-    String input = "C:\\Users\\Evan\\Desktop\\r.csv";
-    String out = "C:\\Users\\Evan\\Desktop\\LUL.csv";
-    SelectiveAttributeCreator sac =
-        new SelectiveAttributeCreator(input, out, atr1, atr2, atr3, atr4);
+    Attribute atr1 = new Attribute("date", "2009-09-07");
+    Attribute atr2 = new Attribute("hour", "11");
+    String input = "C:\\Users\\Evan\\Desktop\\foivos\\SRNDataSep2009\\relationships.csv";
+    String out =
+        "C:\\Users\\Evan\\Desktop\\foivos\\SRNDataSep2009\\verification graph\\relationships.csv";
+    SelectiveAttributeCreator sac = new SelectiveAttributeCreator(input, out, atr1, atr2);
     sac.createSubgraph();
   }
 }

@@ -47,4 +47,15 @@ public class Util {
   public static String getDate(String inputLine) {
     return inputLine.split(",")[2].split(" ")[0];
   }
+
+  /**
+   * Aaaand another issue with the data set showed up. Some entries have data quality 1 or 2 and the
+   * nodes plus the road are missing. Lucky us!
+   *
+   * @param inputLine
+   * @return
+   */
+  public static boolean checkForEmptyNodes(String inputLine) {
+    return inputLine.split(",")[1].trim().length() == 0;
+  }
 }
